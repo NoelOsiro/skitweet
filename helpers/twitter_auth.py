@@ -1,31 +1,33 @@
-"""Authentication part"""
 import os
 import tweepy
 from dotenv import load_dotenv
+from typing import Dict
 
 load_dotenv()
 
-def authenticate_twitter_api():
+def authenticate_twitter_api() -> Dict:
     """
     Authenticate with the Twitter API using the provided credentials.
 
-    Args:
-        consumer_key (str): Twitter API consumer key.
-        consumer_secret (str): Twitter API consumer secret.
-        access_token (str): Twitter API access token.
-        access_token_secret (str): Twitter API access token secret.
-
     Returns:
-        tweepy.API: A Tweepy API object for interacting with Twitter.
+        api_dic: A Tweepy dict with API, Client objects for interacting with Twitter.
     """
-    CONSUMER_KEY = os.getenv("CONSUMER_KEY")
-    CONSUMER_SECRET = os.getenv("CONSUMER_SECRET")
-    ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
-    ACCESS_TOKEN_SECRET = os.getenv("ACCESS_TOKEN_SECRET")
+    CONSUMER_KEY='M7EJl8aOSZXcp8U5tT0AMxJAU'
+    CONSUMER_SECRET='NI3u0McaVniR4x02qGdYFA7ugcfdWnuIsgxipzukWXLOsd0XyX'
+    ACCESS_TOKEN='2419492390-gGLLn0pmow0CZ609velznNGdWvVvP5efhkoIKZ9'
+    ACCESS_TOKEN_SECRET='x1Nay7E6CDyVS9WPtRFqiJVJ43D40aYwY6KjK2Kzq2ZDr'
+
     if not CONSUMER_KEY or not CONSUMER_SECRET or not ACCESS_TOKEN or not ACCESS_TOKEN_SECRET:
         raise ValueError(
             "One or more Twitter API credentials are missing in the environment variables.")
-    auth = tweepy.OAuth1UserHandler(CONSUMER_KEY, CONSUMER_SECRET)
+    
+    auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
     auth.set_access_token(ACCESS_TOKEN, ACCESS_TOKEN_SECRET)
-    api = tweepy.API(auth)
-    return api
+    api = tweepy.API(auth, wait_on_rate_limit=True)
+    client = tweepy.Client(
+        consumer_key=CONSUMER_KEY,
+        consumer_secret=CONSUMER_SECRET,
+        access_token=ACCESS_TOKEN,
+        access_token_secret=ACCESS_TOKEN_SECRET
+    )
+    return {'api': api, 'client': client}
